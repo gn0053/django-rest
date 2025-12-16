@@ -121,3 +121,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+auth_classes = [
+        "rest_framework.authentication.sessionAuthentication",
+        "api.authentication.TokenAuthentication"
+    ]
+# if DEBUG:
+#     auth_classes = [
+#         "api.authentication.TokenAuthentication"
+#     ]
+REST_FRAMEWORK = {
+    'rest_framework.authentication.SessionAuthentication':auth_classes,
+
+    'rest_framework.authentication.BasicAuthentication':[
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ]
+}
