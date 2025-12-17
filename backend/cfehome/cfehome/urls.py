@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include("api.urls")),
     path('api/v1/', include("products.urls")),
+    path('api/v1/products/search/', include("search.urls")),
     #<ROUTER TEST
     path('api/v2/', include(router1.urls)),
     path('api/v2/better/', include(router2.urls)),

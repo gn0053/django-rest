@@ -123,7 +123,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 auth_classes = [
-        "rest_framework.authentication.sessionAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
         "api.authentication.TokenAuthentication"
     ]
 # if DEBUG:
@@ -131,9 +131,11 @@ auth_classes = [
 #         "api.authentication.TokenAuthentication"
 #     ]
 REST_FRAMEWORK = {
-    'rest_framework.authentication.SessionAuthentication':auth_classes,
+    "DEFAULT_AUTHENTICATION_CLASSES":auth_classes,
 
-    'rest_framework.authentication.BasicAuthentication':[
+    "DEFAULT_PERMISSION_CLASSES":[
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
-    ]
+    ],
+    "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE":10
 }
