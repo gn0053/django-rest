@@ -2,6 +2,7 @@ import random
 from django.db import models
 from django.conf import settings
 from django.db.models import Q
+from rest_framework.reverse import reverse
 
 User = settings.AUTH_USER_MODEL
 TAGS_MODEL_VALUE = ["cars", "electronics", "furniture", "boats"]
@@ -36,8 +37,23 @@ class Product(models.Model):
     def __str__(self):
         return self.title
     
+    def get_absolute_url(self):
+        return reverse("product-detail", kwargs={"pk": self.pk})
+    
+    @property
+    def endpoint(self):
+        return self.get_absolute_url()
+    
+    @property
+    def path(self):
+        return f"/products/{self.pk}/"
+
     def is_public(self):
         return self.public
+    
+    @property
+    def body(self): #content converted to body for unified serialization
+        return self.content
     
     @property
     def sale_price(self):

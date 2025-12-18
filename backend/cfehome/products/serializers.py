@@ -20,42 +20,56 @@ class ProductSerializer(serializers.ModelSerializer):
     # user_data = serializers.SerializerMethodField(read_only=True)
     my_discount = serializers.SerializerMethodField(read_only=True) #for enrichment and renaming model fileds
     #urls in response
-    edit_url = serializers.SerializerMethodField(read_only=True)
+    # edit_url = serializers.SerializerMethodField(read_only=True)
 
     #preffered url
-    url = serializers.HyperlinkedIdentityField(
-        view_name="product-detail",
-        lookup_field="pk",
-    )
+    # url = serializers.HyperlinkedIdentityField(
+    #     view_name="product-detail",
+    #     lookup_field="pk",
+    # )
 
     #non model field
     # email = serializers.EmailField(write_only=True)
 
     #adding validators via validators.py
-    title = serializers.CharField(validators=[
-            validate_title_no_hello,
-            unique_product_title,
-        ])
+    # title = serializers.CharField(validators=[
+    #         validate_title_no_hello,
+    #         unique_product_title,
+    #     ])
     
     # name = serializers.CharField(source="title", read_only=True) #rename field, can use fkey relation ie user.email
+    body = serializers.CharField(source="content", read_only=False)
     class Meta:
         model = Product
+        # fields = [
+        #     # "user",
+        #     "owner",
+        #     # "related_products",
+        #     # "user_data",
+        #     "url",
+        #     "edit_url",
+        #     "pk",
+        #     "title",
+        #     # "name",
+        #     "body",
+        #     "price",
+        #     "sale_price",
+        #     "my_discount",
+        #     "public",
+        #     "path",
+        #     # "email",
+        # ]
         fields = [
-            # "user",
             "owner",
-            # "related_products",
-            # "user_data",
-            "url",
-            "edit_url",
             "pk",
             "title",
-            # "name",
-            "content",
+            "body",
             "price",
             "sale_price",
             "my_discount",
             "public",
-            # "email",
+            "path",
+            "endpoint",
         ]
     
     def get_user_data(self, obj): #get_<serializer_field>

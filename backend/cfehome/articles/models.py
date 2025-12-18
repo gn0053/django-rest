@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from rest_framework.reverse import reverse
 
 User = settings.AUTH_USER_MODEL # auth.User
 
@@ -24,7 +25,8 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return f"/api/articles/{self.pk}/"
+        # return f"/api/articles/{self.pk}/"
+        return reverse("article-detail", kwargs={"pk": self.pk})
 
     @property
     def endpoint(self):
