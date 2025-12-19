@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'corsheaders',
 
 
     #internal
@@ -57,12 +58,23 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8111",
+    "https://localhost:8111",
+]
+CORS_ALLOWED_ORIGIN_REGEXES = r"^/api/v1/.*"
+CORS_ALLOW_ALL_ORIGINS = False
 
 ROOT_URLCONF = 'cfehome.urls'
 
@@ -162,3 +174,4 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(seconds=30),#hours = 3
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(minutes=1) #day=1
 }
+
