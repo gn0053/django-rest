@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import datetime
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     #third party packages
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 
 
     #internal
@@ -132,14 +133,15 @@ STATIC_URL = 'static/'
 
 auth_classes = [
         "rest_framework.authentication.SessionAuthentication",
-        "api.authentication.TokenAuthentication"
+        "api.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ]
 # if DEBUG:
 #     auth_classes = [
 #         "api.authentication.TokenAuthentication"
 #     ]
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES":auth_classes,
+    "DEFAULT_AUTHENTICATION_CLASSES":auth_classes, 
 
     "DEFAULT_PERMISSION_CLASSES":[
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
@@ -153,4 +155,10 @@ ALGOLIA = {
     "APPLICATION_ID": "U4WMHPLGH2", 
     "API_KEY": "859561010e9ed86920215832ba381aa1",
     "INDEX_PREFIX": "cfe"
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ["Bearer"],
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(seconds=30),#hours = 3
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(minutes=1) #day=1
 }
