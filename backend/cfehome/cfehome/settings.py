@@ -69,11 +69,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8111",
+CORS_ALLOWED_ORIGINS = [ #bas URL
+    # "http://localhost:8111",
     "https://localhost:8111",
 ]
-CORS_ALLOWED_ORIGIN_REGEXES = r"^/api/v1/.*"
+CORS_ALLOWED_ORIGIN_REGEXES = r"^/api/v1/.*" #the rest of the path
 CORS_ALLOW_ALL_ORIGINS = False
 
 ROOT_URLCONF = 'cfehome.urls'
@@ -162,12 +162,12 @@ REST_FRAMEWORK = {
     "PAGE_SIZE":10
 }
 
-ALGOLIA = {"APPLICATION_ID": "ALGOLIA_APPLICATION_ID", "API_KEY": "ALGOLIA_API_KEY"}
-# ALGOLIA = {
-#     "APPLICATION_ID": "U4WMHPLGH2", 
-#     "API_KEY": "859561010e9ed86920215832ba381aa1",
-#     "INDEX_PREFIX": "cfe"
-# }
+# ALGOLIA = {"APPLICATION_ID": "ALGOLIA_APPLICATION_ID", "API_KEY": "ALGOLIA_API_KEY"}
+ALGOLIA = {
+    "APPLICATION_ID": "U4WMHPLGH2", 
+    "API_KEY": "859561010e9ed86920215832ba381aa1",
+    "INDEX_PREFIX": "cfe"
+}
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ["Bearer"],
