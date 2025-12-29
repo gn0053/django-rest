@@ -1,4 +1,5 @@
 const loginForm = document.getElementById("login-form");
+const searchForm = document.getElementById("search-form");
 const content_container = document.getElementById("content");
 
 function getFetchOption(method, body){
@@ -28,19 +29,58 @@ function validateJWTToken(){
     });
 }
 
-function writeContent(data){
-    if (content_container){
-        content_container.innerHTML = "<pre>" + JSON.stringify(data, null, 4) + "<pre>";
-    }
-}
+function refreshToken(callback=null){
+    const endpoint = `${baseEndpoint}/v1/token/refresh/`;
+    const options = {
+        method: "POST",
+        headers:{
+            "Content-type":"application/json"
+        },
+        body:JSON.stringify({"refresh":localStorage.getItem("refresh")})
+    };
+    fetch(endpoint, options)
+    .then(response=>{
+        return response.json();
 
+    })
+    .then(data=>{
+        if (localStorage.getItem("refresh") !== null) {
+            if (data.code && data.code === "token_not_valid"){
+                localStorage.clear();
+                alert("Please login again");
+            }
+            else{
+                localStorage.setItem("access", data.access)
+                if (callback){
+                    callback();
+                }
+            }
+            
+        }
+    });
+}
 function istokenNotValid(jsonData){
     if (jsonData.code && jsonData.code === "token_not_valid"){
-        // or refresh token query
-        alert("Please login again.");
-        return false;
+        // alert("Please login again.");
+        return false
     }
     return true;
+}
+
+function writeContent(data){
+    if (content_container){
+        let content = [];
+        for (const i of data.results){
+            content.push(`<li>${i.title}</li>`);
+        }
+        if (content.length > 0){
+            content_container.innerHTML = `<ul>${content.join("")}</ul>`;
+        }
+        else{
+            content_container.innerHTML = "No rresults found";
+        }
+        // content_container.innerHTML = "<pre>" + JSON.stringify(data, null, 4) + "<pre>";
+    }
 }
 
 function getProductList(){
@@ -52,9 +92,13 @@ function getProductList(){
 
         })
         .then(data=>{
-            const isValid = istokenNotValid(data);
+            const isValid = istokenNotValid(data)
             if (isValid){
                 writeContent(data);
+            }
+            else
+            {
+                refreshToken(getProductList);
             }
         });
 }
@@ -99,5 +143,67 @@ const baseEndpoint = "http://localhost:8000/api";
 
 if (loginForm){
     loginForm.addEventListener("submit", handleLogin);
+}
+
+
+// SEARCH
+function searchContent(data){
+    if(content_container){
+        content_container.innerHTML = "";
+        if (data){
+            let content = [];
+            for (const i of data.results){
+                if (i.hits){
+                    for (const j of i.hits){
+                        content.push(`<li>${j.title}</li>`);
+                    }
+                }
+            }
+            if (content.length > 0){
+                content_container.innerHTML = `<ul>${content.join("")}</ul>`;
+            }
+            else{
+                content_container.innerHTML = "No rresults found";
+            }
+        }
+            
+    }
+}
+function handleSearch(event=null){
+    if (event){
+        event.preventDefault();
+    }
+   
+    
+    let formData = new FormData(searchForm);
+    let data = Object.fromEntries(formData);
+    let searchParams = new URLSearchParams(data)
+    const endpoint = `${baseEndpoint}/v1/search/?${searchParams}`;
+    const headers = {
+        "Content-type":"application/json"
+    };
+    const authToken = localStorage.getItem("access");
+    if(authToken){
+        headers["Authorization"] = `Bearer ${authToken}`;
+    }
+    const options = {
+        method: "GET",
+        headers:headers
+    };
+    fetch(endpoint, options)
+    .then(serverResponse)
+    .then(data=>{
+        const isValid = istokenNotValid(data);
+        if (isValid){
+            searchContent(data);
+        }
+        else{
+            refreshToken(handleSearch);
+        }
+    })
+    .catch(errorResponse);
+}
+if (searchForm){
+    searchForm.addEventListener("submit", handleSearch);
 }
 getProductList();

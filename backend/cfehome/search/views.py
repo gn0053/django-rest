@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from products.models import Product
 from products.serializers import ProductSerializer
 from .client import perform_search
-class SearchListView(generics.GenericAPIView):
+from api.mixins import StaffEditorPermissionMixin, UserQuerysetMixin
+
+class SearchListView(StaffEditorPermissionMixin, UserQuerysetMixin, generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         user = None
         if request.user.is_authenticated:
