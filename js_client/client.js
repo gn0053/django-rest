@@ -59,6 +59,7 @@ function refreshToken(callback=null){
         }
     });
 }
+
 function istokenNotValid(jsonData){
     if (jsonData.code && jsonData.code === "token_not_valid"){
         // alert("Please login again.");
@@ -207,3 +208,58 @@ if (searchForm){
     searchForm.addEventListener("submit", handleSearch);
 }
 getProductList();
+
+/*
+  Initialize the search client
+
+  If you're logged into the Algolia dashboard, the following values for
+  ALGOLIA_APPLICATION_ID and ALGOLIA_SEARCH_API_KEY are auto-selected from
+  the currently selected Algolia application.
+*/
+const { liteClient: algoliasearch } = window["algoliasearch/lite"];
+const searchClient = algoliasearch(
+  "U4WMHPLGH2",
+  "9d23763b658a3760ff1a6dadf0f10a5d",
+);
+
+// Render the InstantSearch.js wrapper
+// Replace INDEX_NAME with the name of your index.
+const search = instantsearch({
+  indexName: "cfe_Product",
+  searchClient,
+});
+
+search.addWidgets([
+    instantsearch.widgets.searchBox({
+        container: "#searchbox",
+    }),
+
+    instantsearch.widgets.clearRefinements({
+        container:"#clear-refinements",
+
+    }),
+    instantsearch.widgets.refinementList({
+        container:"#user-list",
+        attribute:"user",
+    }),
+    
+    instantsearch.widgets.refinementList({
+        container:"#public-list",
+        attribute:"public",
+    }),
+
+    instantsearch.widgets.hits({
+        container: "#hits",
+        templates:{
+            item:`
+                <div>
+                    <div>{{#helpers.highlight}}{ "attribute": "title" }{{/helpers.highlight}}</div>
+                    <div>{{#helpers.highlight}}{ "attribute": "body" }{{/helpers.highlight}}</div>
+                    <p>{{user}}</p>
+                    <p>\${{price}}</p> 
+                </div>`,
+        }
+    }),
+]);
+
+search.start();
