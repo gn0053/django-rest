@@ -6,7 +6,7 @@ from .models import Product
 # from .validators import validate_title
 from .validators import validate_title_no_hello, unique_product_title
 
-class ProductInlineSerializer(serializers.Serializer): #bad idea but owrks
+class ProductInlineSerializer(serializers.Serializer): #bad idea but works
     url = serializers.HyperlinkedIdentityField(
         view_name="product-detail",
         lookup_field="pk",
